@@ -1,0 +1,44 @@
+# Git Ignore File
+
+# Node.js Specific
+*.js.map
+*.jsbakup
+*.log
+*.lock
+*.pid
+*.pem
+*.secrets
+*.test.js
+node_modules
+
+# Editor Specific
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.user
+*.vsx
+*.xml
+
+# Build and Deployment
+*.build
+*.coverage
+*.deploy
+*.dist
+*.out
+*.test-results
+*.test-report
+*.test-report.xml
+
+# Other
+.DS_Store
+.env
+.env.local
+.env.*.local
+.vscode/
+build/
+node_modules/
+tests/
+coverage/
+dist/
+*.bak
