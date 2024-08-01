@@ -1,0 +1,58 @@
+GET http://localhost:3000/api/clients
+
+###
+POST http://localhost:3000/api/clients
+Content-Type: application/json
+
+{
+    "client_name": "techinfo"
+}
+
+###
+GET http://localhost:3000/api/groups
+
+###
+GET http://localhost:3000/api/managers
+
+###
+GET http://localhost:3000/api/leads
+
+###
+GET http://localhost:3000/api/recruiters
+
+###
+GET http://localhost:3000/api/requirements
+
+###
+GET http://localhost:3000/api/submissions
+
+###
+GET http://localhost:3000/api/users
+
+###
+POST http://localhost:3000/api/users
+Content-Type: application/json
+
+{
+    "first_name": "balaji",
+    "last_name": "dadi",
+    "email": "ariga",
+    "password": "123434555"
+}
+
+###
+PUT http://localhost:3000/api/users/2
+Content-Type: application/json
+
+{
+    "first_name": "balaji",
+    "last_name": "dadi",
+    "email": "ariga",
+    "password": "123434555"
+}
+
+###
+DELETE http://localhost:3000/api/users/2
+
+###
+GET http://localhost:3000/api/roles
