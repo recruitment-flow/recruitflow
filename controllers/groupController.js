@@ -20,8 +20,8 @@ const addGroup = async (req, res) => {
 
 const getAllGroups = async (req, res) => {
 
-    let groups = await Group.findAll({})
-    res.status(200).send(groups)
+    let groups = await Group.findAll({where : {isActive : true}})
+    res.status(200).json(groups)
 
 }
 
@@ -30,8 +30,8 @@ const getAllGroups = async (req, res) => {
 const getOneGroup = async (req, res) => {
 
     let id = req.params.id
-    let group = await Group.findOne({ where: { id: id }})
-    res.status(200).send(group)
+    let group = await Group.findOne({ where: { id: id, isActive:true}})
+    res.status(200).json(group)
 
 }
 
@@ -43,7 +43,12 @@ const updateGroup = async (req, res) => {
 
     const group = await Group.update(req.body, { where: { id: id }})
 
-    res.status(200).send(group)
+    if (group[0] === 1) {
+        res.status(200).json({ message: 'Group successfully updated !' })
+    } else {
+        res.status(404).json({ message: 'Group not found or no changes made !' })
+    }
+   
    
 
 }
@@ -54,9 +59,13 @@ const deleteGroup = async (req, res) => {
 
     let id = req.params.id
     
-    await Group.destroy({ where: { id: id }} )
+    const group = await Group.update({ isActive: false }, { where: { id: id } });
 
-    res.status(200).send('Group is deleted !')
+     if (group[0] === 1) {
+        res.status(200).json({ message: 'Group successfully soft deleted !' });
+    } else {
+        res.status(404).json({ message: 'Group not found or no changes made !' });
+    }
 
 }
 
@@ -66,7 +75,7 @@ const getPublishedGroups = async (req, res) => {
 
     const groups =  await Group.findAll({ where: { isActive: true }})
 
-    res.status(200).send(groups)
+    res.status(200).json(groups)
 
 }
 

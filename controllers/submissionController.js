@@ -1,6 +1,6 @@
 const db = require('../models');
 
-const Submissions = db.submission;
+const Submission = db.submission;
 
 const addSubmission = async (req, res) => {
 
@@ -10,7 +10,7 @@ const addSubmission = async (req, res) => {
         isActive: req.body.isActive        
     }
 
-    const submission = await Submissions.create(info)
+    const submission = await Submission.create(info)
     res.status(200).send(submission)
     console.log(submission)
 
@@ -22,8 +22,8 @@ const addSubmission = async (req, res) => {
 
 const getAllSubmissions = async (req, res) => {
 
-    let submissions = await Submissions.findAll({})
-    res.status(200).send(submissions)
+    let submissions = await Submission.findAll({where :{isActive:true}})
+    res.status(200).json(submissions)
 
 }
 
@@ -32,7 +32,7 @@ const getAllSubmissions = async (req, res) => {
 const getOneSubmission = async (req, res) => {
 
     let id = req.params.id
-    let submission = await Submissions.findOne({ where: { id: id }})
+    let submission = await Submission.findOne({ where: { id: id, isActive:true }})
     res.status(200).send(submission)
 
 }
@@ -43,10 +43,13 @@ const updateSubmission = async (req, res) => {
 
     let id = req.params.id
 
-    const submission = await Submissions.update(req.body, { where: { id: id }})
+    const submission = await Submission.update(req.body, { where: { id: id }})
 
-    res.status(200).send(submission)
-   
+    if (submission[0] === 1) {
+        res.status(200).json({ message: 'Submission successfully updated !' })
+    } else {
+        res.status(404).json({ message: 'Submission not found or no changes made !' })
+    }
 
 }
 
@@ -56,9 +59,13 @@ const deleteSubmission = async (req, res) => {
 
     let id = req.params.id
     
-    await Submissions.destroy({ where: { id: id }} )
+    const submission = await Submission.update({ isActive: false }, { where: { id: id }})
 
-    res.status(200).send('Submission is deleted !')
+    if (submission[0] === 1) {
+        res.status(200).json({ message: 'Submission successfully soft deleted !' })
+    } else {
+        res.status(404).json({ message: 'Submission not found or no changes made !' })
+    }
 
 }
 
@@ -66,7 +73,7 @@ const deleteSubmission = async (req, res) => {
 
 const getPublishedSubmissions = async (req, res) => {
 
-    const submissions =  await Submissions.findAll({ where: { isActive: true }})
+    const submissions =  await Submission.findAll({ where: { isActive: true }})
 
     res.status(200).send(submissions)
 

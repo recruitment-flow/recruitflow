@@ -31,7 +31,7 @@ app.use('/api/', submissionRouter)
 
 
 app.get('/', (req, res) => {   
-    res.send('Hello World!')
+    res.send('WELCOME TO BACKEND APPLICATION!')
 })
 
 app.listen(port, () => console.log(`Server started on port http://localhost:${port}`))

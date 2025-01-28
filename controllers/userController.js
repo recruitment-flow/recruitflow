@@ -24,8 +24,8 @@ const addUser = async (req, res) => {
 
 const getAllUsers = async (req, res) => {
 
-    let users = await User.findAll({})
-    res.status(200).send(users)
+    let users = await User.findAll({where: {isActive:true}})
+    res.status(200).json(users)
 
 }
 
@@ -34,8 +34,8 @@ const getAllUsers = async (req, res) => {
 const getOneUser = async (req, res) => {
 
     let id = req.params.id
-    let user = await User.findOne({ where: { id: id }})
-    res.status(200).send(user)
+    let user = await User.findOne({ where: { id: id, isActive:true }})
+    res.status(200).json(user)
 
 }
 
@@ -47,9 +47,11 @@ const updateUser = async (req, res) => {
 
     const user = await User.update(req.body, { where: { id: id }})
 
-    res.status(200).send(user)
-   
-
+    if (user[0] === 1) {
+        res.status(200).json({ message: 'user successfully updated !' });
+    } else {
+        res.status(404).json({ message: 'user not found or no changes made !' });
+    }
 }
 
 // 5. delete user by id
@@ -58,9 +60,13 @@ const deleteUser = async (req, res) => {
 
     let id = req.params.id
     
-    await User.destroy({ where: { id: id }} )
+    const user = await User.update({ isActive: false }, { where: { id: id } })
 
-    res.status(200).send('User is deleted !')
+    if (user[0] === 1) {
+        res.status(200).json({ message: 'user successfully soft deleted !' });
+    } else {
+        res.status(404).json({ message: 'user not found or no changes made !' });
+    }
 
 }
 
@@ -70,7 +76,7 @@ const getPublishedUsers = async (req, res) => {
 
     const users =  await User.findAll({ where: { isActive: true }})
 
-    res.status(200).send(users)
+    res.status(200).json(users)
 
 }
 

@@ -49,7 +49,7 @@ Object.keys(db).forEach(modelName => {
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
-sequelize.sync({ force: true })
+sequelize.sync({ alter: true })
   .then(() => {
     console.log('Database & tables created!');
   })

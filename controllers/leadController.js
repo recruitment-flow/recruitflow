@@ -1,3 +1,4 @@
+const { where } = require('sequelize');
 const db = require('../models');
 
 const Lead = db.lead;
@@ -22,8 +23,8 @@ const addLead = async (req, res) => {
 
 const getAllLeads = async (req, res) => {
 
-    let leads = await Lead.findAll({})
-    res.status(200).send(leads)
+    let leads = await Lead.findAll({where: {isActive:true}})
+    res.status(200).json(leads)
 
 }
 
@@ -32,34 +33,37 @@ const getAllLeads = async (req, res) => {
 const getOneLead = async (req, res) => {
 
     let id = req.params.id
-    let lead = await Lead.findOne({ where: { id: id }})
-    res.status(200).send(lead)
+    let lead = await Lead.findOne({ where: { id: id, isActive:true }})
+    res.status(200).json(lead)
 
 }
 
 // 4. update Lead
 
 const updateLead = async (req, res) => {
-
     let id = req.params.id
 
     const lead = await Lead.update(req.body, { where: { id: id }})
 
-    res.status(200).send(lead)
-   
-
+    if (lead[0] === 1) {
+        res.status(200).json({ message: 'Lead successfully updated !' })
+    } else {
+        res.status(404).json({ message: 'Lead not found or no changes made !' })
+    }
 }
 
 // 5. delete lead by id
 
 const deleteLead = async (req, res) => {
-
     let id = req.params.id
     
-    await Lead.destroy({ where: { id: id }} )
+    const lead = await Lead.update({ isActive: false }, { where: { id: id } });
 
-    res.status(200).send('Lead is deleted !')
-
+    if (lead[0] === 1) {
+        res.status(200).json({ message: 'Lead successfully soft deleted !' });
+    } else {
+        res.status(404).json({ message: 'Lead not found or no changes made !' });
+    }
 }
 
 // 6. get published lead
@@ -68,7 +72,7 @@ const getPublishedLeads = async (req, res) => {
 
     const leads =  await Lead.findAll({ where: { isActive: true }})
 
-    res.status(200).send(leads)
+    res.status(200).json(leads)
 
 }
 

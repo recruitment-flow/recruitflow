@@ -23,9 +23,8 @@ const addRole = async (req, res) => {
 
 const getAllRoles = async (req, res) => {
 
-    let roles = await Role.findAll({})
-    res.status(200).send(roles)
-
+    let roles = await Role.findAll({where : {isActive:true}})
+    res.status(200).json(roles)
 }
 
 // 3. get single role
@@ -33,8 +32,8 @@ const getAllRoles = async (req, res) => {
 const getOneRole = async (req, res) => {
 
     let id = req.params.id
-    let role = await Role.findOne({ where: { id: id }})
-    res.status(200).send(role)
+    let role = await Role.findOne({ where: { id: id, isActive:true }})
+    res.status(200).json(role)
 
 }
 
@@ -46,20 +45,26 @@ const updateRole = async (req, res) => {
 
     const role = await Role.update(req.body, { where: { id: id }})
 
-    res.status(200).send(role)
-   
-
+    if (role[0] === 1) {
+        res.status(200).json({ message: 'Role successfully updated !' });
+    } else {
+        res.status(404).json({ message: 'Role not found or no changes made !' });
+    }
 }
 
 // 5. delete role by id
 
 const deleteRole = async (req, res) => {
 
-    let id = req.params.id
-    
-    await Role.destroy({ where: { id: id }} )
+    let id = req.params.id   
 
-    res.status(200).send('Role is deleted !')
+    const role = await Role.update({ isActive: false }, { where: { id: id } });
+
+    if (role[0] === 1) {
+        res.status(200).json({ message: 'Role successfully soft deleted !' });
+    } else {
+        res.status(404).json({ message: 'Role not found or no changes made !' });
+    }
 
 }
 
@@ -69,7 +74,7 @@ const getPublishedRoles = async (req, res) => {
 
     const roles =  await Role.findAll({ where: { isActive: true }})
 
-    res.status(200).send(roles)
+    res.status(200).json(roles)
 
 }
 

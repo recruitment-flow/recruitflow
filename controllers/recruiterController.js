@@ -22,8 +22,8 @@ const addRecruiter = async (req, res) => {
 
 const getAllRecruiters = async (req, res) => {
 
-    let recruiters = await Recruiter.findAll({})
-    res.status(200).send(recruiters)
+    let recruiters = await Recruiter.findAll({where: {isActive:true}})
+    res.status(200).json(recruiters)
 
 }
 
@@ -32,34 +32,37 @@ const getAllRecruiters = async (req, res) => {
 const getOneRecruiter = async (req, res) => {
 
     let id = req.params.id
-    let recruiter = await Recruiter.findOne({ where: { id: id }})
-    res.status(200).send(recruiter)
+    let recruiter = await Recruiter.findOne({ where: { id: id, isActive:true }})
+    res.status(200).json(recruiter)
 
 }
 
 // 4. update recruiter
 
 const updateRecruiter = async (req, res) => {
-
     let id = req.params.id
 
     const recruiter = await Recruiter.update(req.body, { where: { id: id }})
 
-    res.status(200).send(recruiter)
-   
-
+    if (recruiter[0] === 1) {
+        res.status(200).json({ message: 'Recruiter successfully updated !' })
+    } else {
+        res.status(404).json({ message: 'Recruiter not found or no changes made !' })
+    }
 }
 
 // 5. delete recruiter by id
 
 const deleteRecruiter = async (req, res) => {
-
     let id = req.params.id
     
-    await Recruiter.destroy({ where: { id: id }} )
+    const recruiter = await Recruiter.update({ isActive: false }, { where: { id: id } });
 
-    res.status(200).send('Recruiter is deleted !')
-
+    if (recruiter[0] === 1) {
+        res.status(200).json({ message: 'Recruiter successfully soft deleted !' });
+    } else {
+        res.status(404).json({ message: 'Recruiter not found or no changes made !' });
+    }
 }
 
 // 6. get published recruiters
@@ -68,7 +71,7 @@ const getPublishedRecruiters = async (req, res) => {
 
     const recruiters =  await Recruiter.findAll({ where: { isActive: true }})
 
-    res.status(200).send(recruiters)
+    res.status(200).json(recruiters)
 
 }
 
